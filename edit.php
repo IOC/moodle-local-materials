@@ -75,7 +75,18 @@ if ($delete and $material->id) {
 }
 
 if ($categoryid) {
-    $courses = $DB->get_records('course', array('category' => $categoryid));
+    $category = $DB->get_record('course_categories', array('id'=>$categoryid));
+    $ids = array();
+    $ids[] = $category->id;
+    while ($category->parent) {
+        $category = $DB->get_record('course_categories', array('id'=>$category->parent));
+        $ids[] = $category->id;
+    }
+
+    list($clause, $params) = $DB->get_in_or_equal($ids);
+    $clause = 'category '.$clause;
+    $courses = $DB->get_records_select('course', $clause, $params);
+
 } else {
     $courses = $DB->get_records('course', array());
 }
