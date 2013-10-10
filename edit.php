@@ -33,8 +33,6 @@ $categoryid = optional_param('categoryid', 1, PARAM_INT);
 $delete    = optional_param('delete', 0, PARAM_BOOL);
 $confirm   = optional_param('confirm', 0, PARAM_BOOL);
 
-$category = null;
-
 if ($id) {
     $material = $DB->get_record('local_materials', array('id' => $id));
 } else {
@@ -74,27 +72,6 @@ if ($delete and $material->id) {
     die;
 }
 
-if ($categoryid) {
-    $category = $DB->get_record('course_categories', array('id'=>$categoryid));
-    $ids = array();
-    $ids[] = $category->id;
-    while ($category->parent) {
-        $category = $DB->get_record('course_categories', array('id'=>$category->parent));
-        $ids[] = $category->id;
-    }
-
-    list($clause, $params) = $DB->get_in_or_equal($ids);
-    $clause = 'category '.$clause;
-    $courses = $DB->get_records_select('course', $clause, $params);
-
-} else {
-    $courses = $DB->get_records('course', array());
-}
-
-$courseselect = array();
-foreach ($courses as $course) {
-    $courseselect[$course->id] = $course->fullname;
-}
 
 if (isset($material->id)) {
     // Edit existing.
@@ -104,12 +81,27 @@ if (isset($material->id)) {
     // Add new.
     $strheading = get_string('add');
 }
-
 $PAGE->set_title($strheading);
 $PAGE->set_heading($COURSE->fullname);
 $PAGE->navbar->add(get_string('plugin_pluginname', 'local_materials'));
 $PAGE->navbar->add($strheading, new moodle_url('/local/materials/edit.php',
     array('id' => $id, 'delete' => $delete, 'confirm' => $confirm)));
+echo $OUTPUT->header();
+echo $OUTPUT->heading($strheading);
+
+if ($categoryid) {
+    $category = coursecat::get($categoryid);
+    // Subcategories courses must be showed
+    $courses = $category->get_courses(array('recursive' => true));
+} else {
+    $courses = $DB->get_records('course', array());
+}
+
+$courseselect = array();
+foreach ($courses as $course) {
+    $courseselect[$course->id] = $course->fullname;
+}
+
 $editform = new material_edit_form(null, array('data' => $material, 'categoryid' => $categoryid, 'courses' => $courseselect));
 
 if ($editform->is_cancelled()) {
@@ -128,10 +120,6 @@ if ($editform->is_cancelled()) {
     }
     redirect(new moodle_url('/local/materials/index.php', array()));
 }
-
-
-echo $OUTPUT->header();
-echo $OUTPUT->heading($strheading);
 
 if (!isset($material->id)) {
     $list = coursecat::make_categories_list();
