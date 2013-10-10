@@ -86,10 +86,10 @@ $PAGE->set_heading($COURSE->fullname);
 $PAGE->navbar->add(get_string('plugin_pluginname', 'local_materials'));
 $PAGE->navbar->add($strheading, new moodle_url('/local/materials/edit.php',
     array('id' => $id, 'delete' => $delete, 'confirm' => $confirm)));
-echo $OUTPUT->header();
-echo $OUTPUT->heading($strheading);
+
 
 if ($categoryid) {
+    require_once($CFG->libdir.'/coursecatlib.php');
     $category = coursecat::get($categoryid);
     // Subcategories courses must be showed
     $courses = $category->get_courses(array('recursive' => true));
@@ -120,6 +120,8 @@ if ($editform->is_cancelled()) {
     }
     redirect(new moodle_url('/local/materials/index.php', array()));
 }
+echo $OUTPUT->header();
+echo $OUTPUT->heading($strheading);
 
 if (!isset($material->id)) {
     $list = coursecat::make_categories_list();
