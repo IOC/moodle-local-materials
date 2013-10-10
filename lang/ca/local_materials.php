@@ -28,4 +28,5 @@ $string['delmaterial'] = 'Esborrar Material';
 $string['materialnotaccesible'] = 'Arxiu no accessible';
 $string['pluginname'] = 'Materials';
 $string['plugin_pluginname'] = 'Materials';
-$string['searchmaterial'] = 'Çercar material';
+$string['searchmaterial'] = 'Cercar material';
+$string['materials:manage'] = 'Administrar materials';

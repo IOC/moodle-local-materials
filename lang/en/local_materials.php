@@ -29,3 +29,4 @@ $string['materialnotaccesible'] = 'File not accesible, not acces to course';
 $string['pluginname'] = 'Materials';
 $string['plugin_pluginname'] = 'Materials';
 $string['searchmaterial'] = 'Search material';
+$string['materials:manage'] = 'Manage materials';
