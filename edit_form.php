@@ -37,6 +37,7 @@ class material_edit_form extends moodleform {
         $material = $this->_customdata['data'];
         $categoryid = $this->_customdata['categoryid'];
         $courses = $this->_customdata['courses'];
+        $attachmentoptions = $this->_customdata['attachmentoptions'];
 
         $mform->addElement('text', 'path', get_string('path'), 'maxlength="254" size="50"');
         $mform->addRule('path', get_string('required'), 'required', null, 'client');
@@ -47,6 +48,8 @@ class material_edit_form extends moodleform {
         if (isset($material->courseid)) {
             $select->setselected($material->courseid);
         }
+
+        $mform->addElement('filemanager', 'attachment_filemanager', get_string('attachment', 'glossary'), null, $attachmentoptions);
 
         $mform->addRule('courseid', get_string('required'), 'required', null, 'client');
 
@@ -62,10 +65,6 @@ class material_edit_form extends moodleform {
         $this->set_data($material);
 
     }
-
-    public function validation($data, $files) {
-    }
-
 
 }
 

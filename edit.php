@@ -37,6 +37,7 @@ if ($id) {
     $material = $DB->get_record('local_materials', array('id' => $id));
 } else {
     $material = new stdClass();
+    $material->id = null;
 }
 
 $returnurl = new moodle_url('/local/materials/index.php');
@@ -72,11 +73,14 @@ if ($delete and $material->id) {
     die;
 }
 
+$maxfiles = 1;
+$maxbytes = 0;
+$attachmentoptions = array('subdirs'=>false, 'maxfiles'=>$maxfiles, 'maxbytes'=>$maxbytes);
+$material = file_prepare_standard_filemanager($material, 'attachment', $attachmentoptions, $context, 'local_materials', 'attachment', $material->id);
 
 if (isset($material->id)) {
     // Edit existing.
     $strheading = get_string('edit');
-
 } else {
     // Add new.
     $strheading = get_string('add');
@@ -102,20 +106,35 @@ foreach ($courses as $course) {
     $courseselect[$course->id] = $course->fullname;
 }
 
-$editform = new material_edit_form(null, array('data' => $material, 'categoryid' => $categoryid, 'courses' => $courseselect));
+$editform = new material_edit_form(null, array('data' => $material,
+                                               'categoryid' => $categoryid,
+                                               'courses' => $courseselect,
+                                               'attachmentoptions' => $attachmentoptions));
 
 if ($editform->is_cancelled()) {
     redirect($returnurl);
 
 } else if ($data = $editform->get_data()) {
+    if (!$data->id) {
+    file_save_draft_area_files($data->attachments, $context->id, 'local_materials', 'attachment',
+                   $material->id, array('subdirs' => 0, 'maxbytes' => $maxbytes, 'maxfiles' => 50));
+    }
+    $material = file_postupdate_standard_filemanager($material, 'attachment', $attachmentoptions, $context, 'local_materials', 'attachment', $material->id);
+    $fs = get_file_storage();
+    $files = $fs->get_area_files($context->id, 'local_materials', 'attachment', $material->id, "timemodified", false);
+
+    foreach ($files as $file) {
+        $material->path = $file->get_source();
+    }
 
     if ($data->id) {
         $material->courseid = $data->courseid;
-        $material->path = $data->path;
+        //$material->path = $data->path;
+
         $DB->update_record('local_materials', $material);
     } else {
         $material->courseid = $data->courseid;
-        $material->path = $data->path;
+        //$material->path = $data->path;
         $DB->insert_record('local_materials', $material);
     }
     redirect(new moodle_url('/local/materials/index.php', array()));
