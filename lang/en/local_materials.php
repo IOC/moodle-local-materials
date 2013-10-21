@@ -30,3 +30,5 @@ $string['pluginname'] = 'Materials';
 $string['plugin_pluginname'] = 'Materials';
 $string['searchmaterial'] = 'Search material';
 $string['materials:manage'] = 'Manage materials';
+$string['sources'] = 'Sources';
+$string['duplicatedcourse'] = 'Course already exists';

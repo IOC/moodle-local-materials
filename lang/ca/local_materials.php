@@ -30,3 +30,4 @@ $string['pluginname'] = 'Materials';
 $string['plugin_pluginname'] = 'Materials';
 $string['searchmaterial'] = 'Cercar material';
 $string['materials:manage'] = 'Administrar materials';
+$string['sources'] = 'Recursos';
