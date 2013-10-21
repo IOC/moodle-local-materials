@@ -25,6 +25,7 @@
 
 require_once(dirname(__FILE__) . '/../../config.php');
 require($CFG->dirroot.'/local/materials/edit_form.php');
+require_once('lib.php');
 
 require_login();
 
@@ -64,7 +65,7 @@ if ($delete and $material->id) {
     $yesurl = new moodle_url('./edit.php', array('id' => $material->id, 'delete' => 1, 'confirm' => 1, 'sesskey' => sesskey()));
     if ($course = $DB->get_record('course', array('id' => $material->courseid))) {
         $messageparams = new stdClass;
-        $messageparams->path = $material->path;
+        $messageparams->sources = $material->sources;
         $messageparams->course = $course->fullname;
     }
     $message = get_string('delconfirm', 'local_materials', $messageparams);
@@ -73,24 +74,22 @@ if ($delete and $material->id) {
     die;
 }
 
-$maxfiles = 1;
+$maxfiles = 50;
 $maxbytes = 0;
 $attachmentoptions = array('subdirs'=>false, 'maxfiles'=>$maxfiles, 'maxbytes'=>$maxbytes);
 $material = file_prepare_standard_filemanager($material, 'attachment', $attachmentoptions, $context, 'local_materials', 'attachment', $material->id);
 
 if (isset($material->id)) {
-    // Edit existing.
     $strheading = get_string('edit');
 } else {
-    // Add new.
     $strheading = get_string('add');
 }
+
 $PAGE->set_title($strheading);
 $PAGE->set_heading($COURSE->fullname);
 $PAGE->navbar->add(get_string('plugin_pluginname', 'local_materials'));
 $PAGE->navbar->add($strheading, new moodle_url('/local/materials/edit.php',
     array('id' => $id, 'delete' => $delete, 'confirm' => $confirm)));
-
 
 if ($categoryid) {
     require_once($CFG->libdir.'/coursecatlib.php');
@@ -115,40 +114,26 @@ if ($editform->is_cancelled()) {
     redirect($returnurl);
 
 } else if ($data = $editform->get_data()) {
-    if (!$data->id) {
-    file_save_draft_area_files($data->attachments, $context->id, 'local_materials', 'attachment',
-                   $material->id, array('subdirs' => 0, 'maxbytes' => $maxbytes, 'maxfiles' => 50));
-    }
-    $material = file_postupdate_standard_filemanager($material, 'attachment', $attachmentoptions, $context, 'local_materials', 'attachment', $material->id);
-    $fs = get_file_storage();
-    $files = $fs->get_area_files($context->id, 'local_materials', 'attachment', $material->id, "timemodified", false);
-
-    foreach ($files as $file) {
-        $material->path = $file->get_source();
-    }
 
     if ($data->id) {
         $material->courseid = $data->courseid;
-        //$material->path = $data->path;
-
         $DB->update_record('local_materials', $material);
     } else {
         $material->courseid = $data->courseid;
-        //$material->path = $data->path;
-        $DB->insert_record('local_materials', $material);
+        $material->id = $DB->insert_record('local_materials', $material);
     }
+
+    file_postupdate_standard_filemanager($material, 'attachment', $attachmentoptions, $context, 'local_materials', 'attachment', $material->id);
+    save_serialized_sources($context, $material);
+
     redirect(new moodle_url('/local/materials/index.php', array()));
 }
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strheading);
 
 if (!isset($material->id)) {
-    $list = coursecat::make_categories_list();
-    $select = new single_select(new moodle_url('./edit.php', array()), 'categoryid', $list, $categoryid, null, 0);
-    $select->nothing = array();
-    $select->set_label(get_string('isactive', 'filters'), array('class' => 'accesshide'));
     echo html_writer::start_tag('div',  array('style' => 'text-align:center'));
-    echo $OUTPUT->render($select);
+    echo $OUTPUT->render(create_category_list($categoryid));
     echo html_writer::end_tag('div');
 }
 

@@ -39,10 +39,6 @@ class material_edit_form extends moodleform {
         $courses = $this->_customdata['courses'];
         $attachmentoptions = $this->_customdata['attachmentoptions'];
 
-        $mform->addElement('text', 'path', get_string('path'), 'maxlength="254" size="50"');
-        $mform->addRule('path', get_string('required'), 'required', null, 'client');
-        $mform->setType('path', PARAM_TEXT);
-
         $select = $mform->addElement('select', 'courseid', get_string('courses'), $courses);
 
         if (isset($material->courseid)) {
@@ -64,6 +60,20 @@ class material_edit_form extends moodleform {
 
         $this->set_data($material);
 
+    }
+
+    public function validation($data, $files) {
+        global $DB;
+
+        $errors = array();
+
+        if (!$data['id']) {
+            if ($DB->get_records('local_materials', array('courseid'=>$data['courseid']))) {
+                $errors['attachment_filemanager'] = get_string('duplicatedcourse', 'local_materials');
+            }
+        }
+
+        return $errors;
     }
 
 }
