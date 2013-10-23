@@ -23,28 +23,32 @@
  */
 
 require_once(dirname(__FILE__) . '/../../config.php');
+require_once('lib.php');
 
 require_login();
 
 $path = required_param('path', PARAM_PATH);
+$originalpath = trim($path, '/');
 
-$path = trim($path, '/');
-$parts = explode('/', $path);
-while (count($parts) > 0) {
-    if ($records = $DB->get_records('local_materials', array('path' => implode('/', $parts)))) {
-        foreach ($records as $record) {
-            $context = context_course::instance($record->courseid);
-            if (has_capability('moodle/course:viewparticipants', $context)) {
-                $time = sprintf("%08x", time());
-                $token = md5($CFG->local_materials_secret_token.'/'.$path.$time);
-                $url = $CFG->local_materials_secret_url.'/'.$token.'/'.$time.'/'.$path;
-                @header($_SERVER['SERVER_PROTOCOL'] . ' 302 Found');
-                @header('Location: ' . $url);
-                exit;
+$materials = $DB->get_records('local_materials');
+foreach ($materials as $material) {
+    $parts = explode('/', $path);
+    $sources = unserialize($material->sources);
+    while (count($parts)>0) {
+        foreach($sources as $source) {
+            if (implode('/', $parts) === trim($source,'/')) {
+                $context = context_course::instance($material->courseid);
+                if (has_capability('moodle/course:viewparticipants', $context)) {
+                    $url = make_secret_url($originalpath);
+                    redirect($url);
+                    exit;
+                }
             }
         }
+        array_pop($parts);
     }
-    array_pop($parts);
+
 }
+
 print_error('materialnotaccesible', 'local_materials');
 
