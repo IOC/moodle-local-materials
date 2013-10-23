@@ -23,68 +23,68 @@
  */
 
 function add_search_form($searchquery = '') {
-	$search  = html_writer::start_tag('form', array('id' => 'searchmaterialquery', 'method' => 'get'));
-	$search .= html_writer::start_tag('div');
-	$search .= html_writer::label(get_string('searchmaterial', 'local_materials'), 'material_search_q'); // No : in form labels!
-	$search .= html_writer::empty_tag('input', array('id' => 'material_search_q',
-    												 'type' => 'text',
-    											  	 'name' => 'search',
-    												 'value' => $searchquery));
-	$search .= html_writer::empty_tag('input', array('type' => 'submit', 'value' => get_string('search')));
-	$search .= html_writer::end_tag('div');
-	$search .= html_writer::end_tag('form');
-	echo $search;
+    $search  = html_writer::start_tag('form', array('id' => 'searchmaterialquery', 'method' => 'get'));
+    $search .= html_writer::start_tag('div');
+    $search .= html_writer::label(get_string('searchmaterial', 'local_materials'), 'material_search_q'); // No : in form labels!
+    $search .= html_writer::empty_tag('input', array('id' => 'material_search_q',
+                                                     'type' => 'text',
+                                                       'name' => 'search',
+                                                     'value' => $searchquery));
+    $search .= html_writer::empty_tag('input', array('type' => 'submit', 'value' => get_string('search')));
+    $search .= html_writer::end_tag('div');
+    $search .= html_writer::end_tag('form');
+    echo $search;
 }
 
 function search_courses($searchquery = '') {
-	if (!empty($searchquery)) {
-    	$searchcoursesparams = array();
-    	$searchcoursesparams['search'] = $searchquery;
-    	$courses = coursecat::search_courses($searchcoursesparams);
-    	return $courses;
-	} else {
-		return false;
-	}
+    if (!empty($searchquery)) {
+        $searchcoursesparams = array();
+        $searchcoursesparams['search'] = $searchquery;
+        $courses = coursecat::search_courses($searchcoursesparams);
+        return $courses;
+    } else {
+        return false;
+    }
 }
 
 function get_materials($searchquery, $page) {
 
-	global $DB;
+    global $DB;
 
-	$materials = array();
-	$params = array();
+    $materials = array();
+    $params = array();
 
-	if (empty($searchquery)) {
-		$materials = $DB->get_records('local_materials');
-		$total = $DB->count_records('local_materials');
-		return array('records' => $materials, 'total'=>$total);
-	}
+    if (empty($searchquery)) {
+        $materials = $DB->get_records('local_materials');
+        $total = $DB->count_records('local_materials');
+        return array('records' => $materials, 'total' => $total);
+    }
 
-	if ($courses = search_courses($searchquery)) {
-		$in = '(';
-	    foreach ($courses as $course) {
-	        $in .= $course->id.',';
-	    }
-	    $in = rtrim($in, ',').')';
-		$wherecondition = "courseid IN $in";
-	} else {
-		return array();
-	}
+    if ($courses = search_courses($searchquery)) {
+        $in = '(';
+        foreach ($courses as $course) {
+            $in .= $course->id.',';
+        }
+        $in = rtrim($in, ',').')';
+        $wherecondition = "courseid IN $in";
+    } else {
+        return array();
+    }
 
-	$fields = 'SELECT *';
-	$sql = " FROM {local_materials}";
+    $fields = 'SELECT *';
+    $sql = " FROM {local_materials}";
 
-	if (!empty($wherecondition)) {
-	    $sql .= " WHERE $wherecondition";
-	}
-	$order = ' ORDER BY path ASC';
-	$materials = $DB->get_records_sql($fields . $sql . $order, $params, $page * PAGENUM, PAGENUM);
-	$total = $DB->count_records('local_materials');
-	return array('records'=> $materials, 'total' => $total);
+    if (!empty($wherecondition)) {
+        $sql .= " WHERE $wherecondition";
+    }
+    $order = ' ORDER BY path ASC';
+    $materials = $DB->get_records_sql($fields . $sql . $order, $params, $page * PAGENUM, PAGENUM);
+    $total = $DB->count_records('local_materials');
+    return array('records' => $materials, 'total' => $total);
 }
 
 function create_category_list($categoryid) {
-	$list = coursecat::make_categories_list();
+    $list = coursecat::make_categories_list();
     $select = new single_select(new moodle_url('./edit.php', array()), 'categoryid', $list, $categoryid, null, 0);
     $select->nothing = array();
     $select->set_label(get_string('isactive', 'filters'), array('class' => 'accesshide'));
@@ -92,9 +92,9 @@ function create_category_list($categoryid) {
 }
 
 function save_serialized_sources($context, $material) {
-	global $DB;
+    global $DB;
 
-	$fs = get_file_storage();
+    $fs = get_file_storage();
     $files = $fs->get_area_files($context->id, 'local_materials', 'attachment', $material->id, "timemodified", false);
     $sources = array();
     foreach ($files as $file) {
@@ -106,43 +106,10 @@ function save_serialized_sources($context, $material) {
 }
 
 function make_secret_url($path) {
-	global $CFG;
+    global $CFG;
 
-	$time = sprintf("%08x", time());
+    $time = sprintf("%08x", time());
     $token = md5($CFG->local_materials_secret_token.'/'.$path.$time);
-	$url = $CFG->local_materials_secret_url.'/'.$token.'/'.$time.'/'.$path;
-	return $url;
-}
-
-function make_table_line($material) {
-	global $DB, $OUTPUT;
-
-	$line = array();
-    $course = $DB->get_record('course', array('id' => $material->courseid));
-    $courseurl = new moodle_url('/course/view.php', array('id' => $course->id));
-    $line[] = html_writer::link($courseurl, $course->shortname);
-    $line[] = html_writer::link($courseurl, $course->fullname);
-    $stringpath = '';
-    if ($material->sources) {
-        $files = unserialize($material->sources);
-        $stringpath = '';
-        foreach ($files as $key=>$value) {
-            $filename = explode('/', $value);
-            $stringpath .= html_writer::empty_tag('img',
-        array('src' => $OUTPUT->pix_url('i/report'), 'alt' => get_string('edit'), 'class' => 'iconsmall')).end($filename)."\n";
-        }
-    }
-    $line[] = format_text($stringpath);
-    $buttons = array();
-    $editlink = new moodle_url('./edit.php', array('id' => $material->id, 'categoryid' => $course->category));
-    $editicon = html_writer::empty_tag('img',
-        array('src' => $OUTPUT->pix_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall'));
-    $deletelink = new moodle_url('./edit.php', array('id' => $material->id, 'categoryid' => $course->category, 'delete' => 1));
-    $deleteicon = html_writer::empty_tag('img',
-        array('src' => $OUTPUT->pix_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall'));
-    $buttons[] = html_writer::link($editlink, $editicon);
-    $buttons[] = html_writer::link($deletelink, $deleteicon);
-    $line[] = implode(' ', $buttons);
-
-    return $line;
+    $url = $CFG->local_materials_secret_url.'/'.$token.'/'.$time.'/'.$path;
+    return $url;
 }

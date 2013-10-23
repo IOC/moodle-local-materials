@@ -50,27 +50,15 @@ $PAGE->navbar->add($strheading, new moodle_url('/local/materials/index.php'));
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strheading);
 
-add_search_form($searchquery);
-
 $materials = get_materials($searchquery, $page);
+
+$ouput = $PAGE->get_renderer('local_materials');
+echo $ouput->search_form($searchquery);
 
 echo $OUTPUT->paging_bar($materials['total'], $page, PAGENUM, new moodle_url('/local/materials/index.php'));
 
-$data = array();
+echo $ouput->materials_table($materials);
 
-if ($materials) {
-    foreach ($materials['records'] as $material) {
-        $data[] = make_table_line($material);
-    }
-}
-
-$table = new html_table();
-$table->head = array(get_string('shortname'), get_string('course'), get_string('sources', 'local_materials'), get_string('edit'));
-$table->data = $data;
-$table->id = 'materials';
-$table->attributes['class'] = 'admintable generaltable';
-
-echo html_writer::table($table);
 echo $OUTPUT->paging_bar($materials['total'], $page, PAGENUM, new moodle_url('/local/materials/index.php'));
 
 echo $OUTPUT->single_button(new moodle_url('./edit.php', array('categoryid' => $categoryid)), get_string('add'));
