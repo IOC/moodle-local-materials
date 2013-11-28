@@ -70,10 +70,27 @@ class local_materials_renderer extends plugin_renderer_base {
         $files = unserialize($sources);
         $stringsources = '';
         foreach ($files as $key => $value) {
+
             $filename = explode('/', $value);
-            $stringsources .= html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('i/report'),
+            if (!preg_match('/^.+?\.\w+$/', end($filename))) {
+                $stringsourcesfolders[] = html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('i/files'),
                                                                'alt' => get_string('edit'),
                                                                'class' => 'iconsmall')).end($filename)."\n";
+            } else {
+                $stringsourcesfiles[] = html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('i/report'),
+                                                               'alt' => get_string('edit'),
+                                                               'class' => 'iconsmall')).end($filename)."\n";
+            }
+        }
+        if (isset($stringsourcesfolders)) {
+            foreach ($stringsourcesfolders as $stringsourcesfolder) {
+                $stringsources .= $stringsourcesfolder;
+            }
+        }
+        if (isset($stringsourcesfiles)) {
+            foreach ($stringsourcesfiles as $stringsourcesfile) {
+                $stringsources .= $stringsourcesfile;
+            }
         }
         return $stringsources;
     }
