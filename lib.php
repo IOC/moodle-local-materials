@@ -63,8 +63,8 @@ function get_materials($searchquery, $page) {
     if (!empty($wherecondition)) {
         $sql .= " WHERE $wherecondition";
     }
-    $order = ' ORDER BY path ASC';
-    $materials = $DB->get_records_sql($fields . $sql . $order, $params, $page * PAGENUM, PAGENUM);
+
+    $materials = $DB->get_records_sql($fields . $sql, $params, $page * PAGENUM, PAGENUM);
     $total = $DB->count_records('local_materials');
     return array('records' => $materials, 'total' => $total);
 }
