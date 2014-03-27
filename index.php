@@ -31,12 +31,18 @@ require_login();
 
 $categoryid = optional_param('categoryid', 1, PARAM_INT);
 $page = optional_param('page', 0, PARAM_INT);
-$searchquery = optional_param('search', '', PARAM_RAW);
+$search = optional_param('search', '', PARAM_RAW);
 
 $context = context_system::instance();
 require_capability('local/materials:manage', $context);
 
 $strheading = get_string('plugin_pluginname', 'local_materials');
+
+$params = array('page' => $page);
+if (!empty($search)) {
+    $params['search'] = $search;
+}
+$baseurl = new moodle_url('/local/materials/index.php', $params);
 
 $PAGE->set_context($context);
 $PAGE->set_pagelayout('admin');
@@ -50,16 +56,16 @@ $PAGE->navbar->add($strheading, new moodle_url('/local/materials/index.php'));
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strheading);
 
-$materials = get_materials($searchquery, $page);
+$materials = get_materials($search, $page);
 
 $ouput = $PAGE->get_renderer('local_materials');
-echo $ouput->search_form($searchquery);
+echo $ouput->search_form($search);
 
-echo $OUTPUT->paging_bar($materials['total'], $page, PAGENUM, new moodle_url('/local/materials/index.php'));
+echo $OUTPUT->paging_bar($materials['total'], $page, PAGENUM, $baseurl);
 
 echo $ouput->materials_table($materials);
 
-echo $OUTPUT->paging_bar($materials['total'], $page, PAGENUM, new moodle_url('/local/materials/index.php'));
+echo $OUTPUT->paging_bar($materials['total'], $page, PAGENUM, $baseurl);
 
 echo $OUTPUT->single_button(new moodle_url('./edit.php', array('categoryid' => $categoryid)), get_string('add'));
 echo $OUTPUT->footer();
