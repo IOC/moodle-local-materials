@@ -25,10 +25,11 @@
 
 $string['delconfirm'] = 'Do you really want to delete material \'{$a->path}\' associated to course \'{$a->course}\'?';
 $string['delmaterial'] = 'Delete Material';
+$string['duplicatedcourse'] = 'Course already exists';
 $string['materialnotaccesible'] = 'File not accesible, not acces to course';
+$string['materials:manage'] = 'Manage materials';
+$string['nomaterials'] = 'No results were found';
 $string['pluginname'] = 'Materials';
 $string['plugin_pluginname'] = 'Materials';
 $string['searchmaterial'] = 'Search material';
-$string['materials:manage'] = 'Manage materials';
 $string['sources'] = 'Sources';
-$string['duplicatedcourse'] = 'Course already exists';

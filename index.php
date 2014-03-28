@@ -50,6 +50,7 @@ $PAGE->set_url(new moodle_url('/local/materials/index.php'));
 $PAGE->set_title($strheading);
 $PAGE->add_body_class('path-admin');
 $PAGE->set_heading($COURSE->fullname);
+$PAGE->requires->css('/local/materials/styles.css');
 $PAGE->navbar->add(get_string('plugin_pluginname', 'local_materials'));
 $PAGE->navbar->add($strheading, new moodle_url('/local/materials/index.php'));
 

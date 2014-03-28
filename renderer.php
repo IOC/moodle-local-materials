@@ -28,12 +28,17 @@ class local_materials_renderer extends plugin_renderer_base {
     public function search_form($searchquery) {
 
         $search  = html_writer::start_tag('form', array('id' => 'searchmaterialquery', 'method' => 'get'));
-        $search .= html_writer::start_tag('div');
+        $search .= html_writer::start_tag('div', array('class' => 'materials_search'));
         $search .= html_writer::label(get_string('searchmaterial', 'local_materials'), 'material_search_q'); // No : in form labels!
-        $search .= html_writer::empty_tag('input', array('id' => 'material_search_q',
-                                                         'type' => 'text',
-                                                         'name' => 'search',
-                                                         'value' => $searchquery));
+        $params = array(
+                        'id' => 'material_search_q',
+                        'type' => 'text',
+                        'name' => 'search',
+                        'value' => $searchquery,
+                        'maxlength' => '50',
+                        'class' => 'materials_text_search',
+        );
+        $search .= html_writer::empty_tag('input', $params);
         $search .= html_writer::empty_tag('input', array('type' => 'submit', 'value' => get_string('search')));
         $search .= html_writer::end_tag('div');
         $search .= html_writer::end_tag('form');
@@ -99,8 +104,12 @@ class local_materials_renderer extends plugin_renderer_base {
         $data = array();
 
         if ($materials) {
-            foreach ($materials['records'] as $material) {
-                $data[] = $this->make_table_line($material);
+            if ($materials['total'] > 0) {
+                foreach ($materials['records'] as $material) {
+                    $data[] = $this->make_table_line($material);
+                }
+            } else {
+                return get_string('nomaterials', 'local_materials');
             }
         }
 

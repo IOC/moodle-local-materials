@@ -25,9 +25,11 @@
 
 $string['delconfirm'] = 'Segur que voleu esborrar el material \'{$a->path}\' associat al curs \'{$a->course}\'?';
 $string['delmaterial'] = 'Esborrar Material';
+$string['duplicatedcourse'] = 'El curs ja existeix';
 $string['materialnotaccesible'] = 'Arxiu no accessible';
+$string['materials:manage'] = 'Administrar materials';
+$string['nomaterials'] = 'No s\'han trobat materials';
 $string['pluginname'] = 'Materials';
 $string['plugin_pluginname'] = 'Materials';
 $string['searchmaterial'] = 'Cercar material';
-$string['materials:manage'] = 'Administrar materials';
 $string['sources'] = 'Recursos';
