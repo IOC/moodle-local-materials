@@ -76,7 +76,7 @@ if ($delete and $material->id) {
 
 $maxfiles = 50;
 $maxbytes = 0;
-$attachmentoptions = array('subdirs'=>false, 'maxfiles'=>$maxfiles, 'maxbytes'=>$maxbytes);
+$attachmentoptions = array('subdirs' => false, 'maxfiles' => $maxfiles, 'maxbytes' => $maxbytes);
 $material = file_prepare_standard_filemanager($material, 'attachment', $attachmentoptions, $context, 'local_materials', 'attachment', $material->id);
 
 if (isset($material->id)) {

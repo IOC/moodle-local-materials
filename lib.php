@@ -54,7 +54,7 @@ function get_materials($searchquery, $page) {
         $in = rtrim($in, ',').')';
         $wherecondition = "courseid IN $in";
     } else {
-        return array('records'=>array(), 'total'=>0);
+        return array('records' => array(), 'total' => 0);
     }
 
     $countfields = "SELECT COUNT(1)";
@@ -66,7 +66,7 @@ function get_materials($searchquery, $page) {
     }
 
     $materials = $DB->get_records_sql($fields . $sql, $params, $page * PAGENUM, PAGENUM);
-    $total =  $DB->count_records_sql($countfields . $sql, $params);
+    $total = $DB->count_records_sql($countfields . $sql, $params);
 
     return array('records' => $materials, 'total' => $total);
 }
