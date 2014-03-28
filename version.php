@@ -24,9 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2013112901;
-$plugin->release   = '1.0.0';
+$plugin->version   = 2014032800;
+$plugin->release   = '1.1.0';
 $plugin->maturity  = MATURITY_STABLE;
 $plugin->requires  = 2013051401;
 $plugin->component = 'local_materials';
-
