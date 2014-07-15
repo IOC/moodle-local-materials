@@ -34,10 +34,10 @@ $materials = $DB->get_records('local_materials');
 foreach ($materials as $material) {
     $parts = explode('/', $path);
     $sources = unserialize($material->sources);
+    $context = context_course::instance($material->courseid);
     while (count($parts) > 0) {
         foreach ($sources as $source) {
             if (implode('/', $parts) === trim($source, '/')) {
-                $context = context_course::instance($material->courseid);
                 if (has_capability('moodle/course:viewparticipants', $context)) {
                     $url = make_secret_url($originalpath);
                     redirect($url);
