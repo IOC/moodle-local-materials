@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['delconfirm'] = 'Do you really want to delete material \'{$a->path}\' associated to course \'{$a->course}\'?';
+$string['delconfirm'] = 'Do you really want to delete material \'{$a->sources}\' associated to course \'{$a->course}\'?';
 $string['delmaterial'] = 'Delete Material';
 $string['duplicatedcourse'] = 'Course already exists';
 $string['materialnotaccesible'] = 'File not accesible, not acces to course';

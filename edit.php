@@ -65,7 +65,8 @@ if ($delete and $material->id) {
     $yesurl = new moodle_url('./edit.php', array('id' => $material->id, 'delete' => 1, 'confirm' => 1, 'sesskey' => sesskey()));
     if ($course = $DB->get_record('course', array('id' => $material->courseid))) {
         $messageparams = new stdClass;
-        $messageparams->sources = $material->sources;
+        $messageparams->sources = implode(',', unserialize($material->sources));
+        $messageparams->sources = str_replace('/', '', $messageparams->sources);
         $messageparams->course = $course->fullname;
     }
     $message = get_string('delconfirm', 'local_materials', $messageparams);

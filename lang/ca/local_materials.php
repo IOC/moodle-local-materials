@@ -23,7 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['delconfirm'] = 'Segur que voleu esborrar el material \'{$a->path}\' associat al curs \'{$a->course}\'?';
+$string['delconfirm'] = 'Segur que voleu esborrar el material \'{$a->sources}\' associat al curs \'{$a->course}\'?';
 $string['delmaterial'] = 'Esborrar Material';
 $string['duplicatedcourse'] = 'El curs ja existeix';
 $string['materialnotaccesible'] = 'Arxiu no accessible';
