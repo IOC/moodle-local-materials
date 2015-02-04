@@ -15,17 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
+ * Event observers used in local materials.
  *
  * @package    local_materials
- * @copyright  2013 IOC
+ * @copyright  2015 IOC
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015020400;
-$plugin->release   = '1.2.0';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2013051401;
-$plugin->component = 'local_materials';
+/**
+ * Event observer for local_materials.
+ */
+class local_materials_observer {
+
+    /**
+     * Triggered via course_deleted event.
+     *
+     * @param \core\event\course_deleted $event
+     */
+    public static function course_deleted(\core\event\course_deleted $event) {
+        global $DB;
+
+        $DB->delete_records('local_materials', array('courseid' => $event->objectid));
+    }
+}

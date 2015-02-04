@@ -15,17 +15,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details.
- *
  * @package    local_materials
- * @copyright  2013 IOC
+ * @copyright  2015 IOC
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
-
-$plugin->version   = 2015020400;
-$plugin->release   = '1.2.0';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2013051401;
-$plugin->component = 'local_materials';
+$observers = array(
+    array(
+        'eventname' => 'core\event\course_deleted',
+        'callback'  => 'local_materials_observer::course_deleted',
+    ),
+);
