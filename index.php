@@ -62,11 +62,15 @@ $materials = get_materials($search, $page);
 $ouput = $PAGE->get_renderer('local_materials');
 echo $ouput->search_form($search);
 
+echo html_writer::start_div('local_materials');
 echo $OUTPUT->paging_bar($materials['total'], $page, PAGENUM, $baseurl);
+echo html_writer::end_div();
 
 echo $ouput->materials_table($materials);
 
+echo html_writer::start_div('local_materials');
 echo $OUTPUT->paging_bar($materials['total'], $page, PAGENUM, $baseurl);
+echo html_writer::end_div();
 
 echo $OUTPUT->single_button(new moodle_url('./edit.php', array('categoryid' => $categoryid)), get_string('add'));
 echo $OUTPUT->footer();
