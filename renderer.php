@@ -58,10 +58,10 @@ class local_materials_renderer extends plugin_renderer_base {
         $buttons = array();
         $editlink = new moodle_url('./edit.php', array('id' => $material->id, 'categoryid' => $course->category));
         $editicon = html_writer::empty_tag('img',
-            array('src' => $OUTPUT->pix_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall'));
+            array('src' => $OUTPUT->image_url('t/edit'), 'alt' => get_string('edit'), 'class' => 'iconsmall'));
         $deletelink = new moodle_url('./edit.php', array('id' => $material->id, 'categoryid' => $course->category, 'delete' => 1));
         $deleteicon = html_writer::empty_tag('img',
-            array('src' => $OUTPUT->pix_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall'));
+            array('src' => $OUTPUT->image_url('t/delete'), 'alt' => get_string('delete'), 'class' => 'iconsmall'));
         $buttons[] = html_writer::link($editlink, $editicon);
         $buttons[] = html_writer::link($deletelink, $deleteicon);
         $line[] = implode(' ', $buttons);
@@ -78,11 +78,11 @@ class local_materials_renderer extends plugin_renderer_base {
 
             $filename = explode('/', $value);
             if (!preg_match('/^.+?\.\w+$/', end($filename))) {
-                $stringsourcesfolders[] = html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('i/files'),
+                $stringsourcesfolders[] = html_writer::empty_tag('img', array('src' => $OUTPUT->image_url('i/files'),
                                                                'alt' => get_string('edit'),
                                                                'class' => 'iconsmall')).end($filename)."\n";
             } else {
-                $stringsourcesfiles[] = html_writer::empty_tag('img', array('src' => $OUTPUT->pix_url('i/report'),
+                $stringsourcesfiles[] = html_writer::empty_tag('img', array('src' => $OUTPUT->image_url('i/report'),
                                                                'alt' => get_string('edit'),
                                                                'class' => 'iconsmall')).end($filename)."\n";
             }
