@@ -31,5 +31,6 @@ $string['materials:manage'] = 'Administrar materials';
 $string['nomaterials'] = 'No s\'han trobat materials';
 $string['pluginname'] = 'Materials';
 $string['plugin_pluginname'] = 'Materials';
+$string['privacy:metadata'] = 'Materials no enregistra cap dada personal.';
 $string['searchmaterial'] = 'Cercar material';
 $string['sources'] = 'Recursos';

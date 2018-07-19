@@ -24,8 +24,8 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2016011901;
-$plugin->release   = '1.2.0';
+$plugin->version   = 2016011902;
+$plugin->release   = '1.2.1';
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->requires  = 2017051500;
+$plugin->requires  = 2018051700; // Moodle 3.5
 $plugin->component = 'local_materials';

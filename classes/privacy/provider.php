@@ -15,22 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Language strings
+ * Privacy Subsystem implementation for local_materials.
  *
- * @package    local
- * @subpackage materials
- * @copyright  2013 IOC
+ * @package    local_materials
+ * @copyright  2018 Institut Obert de Catalunya
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['delconfirm'] = 'Do you really want to delete material \'{$a->sources}\' associated to course \'{$a->course}\'?';
-$string['delmaterial'] = 'Delete Material';
-$string['duplicatedcourse'] = 'Course already exists';
-$string['materialnotaccesible'] = 'File not accesible, not acces to course';
-$string['materials:manage'] = 'Manage materials';
-$string['nomaterials'] = 'No results were found';
-$string['pluginname'] = 'Materials';
-$string['plugin_pluginname'] = 'Materials';
-$string['privacy:metadata'] = 'Materials plugin does not store any personal data.';
-$string['searchmaterial'] = 'Search material';
-$string['sources'] = 'Sources';
+namespace local_materials\privacy;
+
+defined('MOODLE_INTERNAL') || die();
+
+class provider implements \core_privacy\local\metadata\null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}
